@@ -76,7 +76,10 @@ class RegistrarUsuario extends Component {
 
   onChange = e => {
       let user = Object.assign({},this.state.user);
-      user[e.target.name] = e.target.value
+      if(e.target.name === 'email')
+        user[e.target.name] = e.target.value.replace(/ /g,'')
+      else
+        user[e.target.name] = e.target.value
       this.setState({
           user : user
       })
@@ -88,7 +91,8 @@ class RegistrarUsuario extends Component {
       const {firebase, user} = this.state;
       if(sesion.usuario.rol === 'admin'){
         try {
-          const idToken = await firebase.auth.currentUser.getIdToken(true);
+
+            const idToken = await firebase.auth.currentUser.getIdToken(true);
             let callback = await crearUsuario('api/create/user', this.state.user, idToken)
             console.log("callback",callback);
             if(callback.status){

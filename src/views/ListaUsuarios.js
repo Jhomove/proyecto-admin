@@ -132,6 +132,8 @@ const ListaUsuarios = props => {
                                     new Promise(async (resolve,reject) => {
                                         const {firebase, data} = state;
                                         if (oldData) {
+                                            newData['email'] = newData['email'].replace(/ /g,'')
+                                            console.log("newDATA",newData);
                                             const callback = await actualizarUsuario(firebase,'/api/update/user/',newData)
                                             if(callback.status){
                                                 openMensajePantalla(dispatch, {

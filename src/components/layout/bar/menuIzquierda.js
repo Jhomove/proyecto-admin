@@ -15,7 +15,7 @@ export const MenuIzquierda = ({classes}) => (
                     <i className="material-icons">assessment</i>
                     <ListItemText classes={{primary: classes.ListItemText}} primary="Estadísticas" />
                 </ListItem>
-                <ListItem component={Link} button to="">
+                <ListItem component={Link} button to="/interacciones">
                     <i className="material-icons">record_voice_over</i>
                     <ListItemText classes={{primary: classes.ListItemText}} primary="Interacciones" />
                 </ListItem>
@@ -23,7 +23,7 @@ export const MenuIzquierda = ({classes}) => (
                     <i className="material-icons">comment</i>
                     <ListItemText classes={{primary: classes.ListItemText}} primary="Conocimiento" />
                 </ListItem>
-                <ListItem component={Link} button to="">
+                <ListItem component={Link} button to="/Dependencias">
                     <i className="material-icons">drafts</i>
                     <ListItemText classes={{primary: classes.ListItemText}} primary="Dependencias" />
                 </ListItem>
