@@ -35,12 +35,13 @@ const MensajeBievenida = (props) => {
         const {firebase, data} = estado;
         setLoading(true);
         if(title === ''){
-          const callback = await obtenerInteracciones(firebase, '/api/read/configuraciones/greeting');
-          setTitle(callback.data);
-          dispatchInteractions({
-            type: "CAMBIAR_TITULO",
-            title: title
-          });
+          const localTitle = localStorage.getItem('title');
+          if(!localTitle){
+            const callback = await obtenerInteracciones(firebase, '/api/read/configuraciones/greeting');
+            setTitle(callback.data);
+          } else {
+            setTitle(localTitle);
+          }
         }
         setLoading(false);
       }
@@ -56,6 +57,10 @@ const MensajeBievenida = (props) => {
             open: true,
             mensaje: "Se actualizo correctamente el título"
           })
+          dispatchInteractions({
+            type: "CAMBIAR_TITULO",
+            title: title
+          });
         } else{
           openMensajePantalla(dispatch, {
             open: true,

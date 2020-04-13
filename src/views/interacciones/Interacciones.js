@@ -11,6 +11,7 @@ import { consumerFirebase } from '../../server';
 import { withRouter } from 'react-router-dom';
 import MensajeBievenida from './tabs/MensajeBienvenida';
 import MenuPersistente from './tabs/MenuPersistente';
+import Postbacks from './tabs/Postbacks';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -83,7 +84,6 @@ const style = {
 const Interacciones = (props) => {
   const classes = useStyles();
   const [value, setValue] = React.useState(0);
-  const [menuOpcion, cambiarMenuOpcion] = React.useState("bloque");
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -95,18 +95,18 @@ const Interacciones = (props) => {
         <Tabs value={value} onChange={handleChange} aria-label="simple tabs example">
           <Tab label="Bienvenida" {...a11yProps(0)} />
           <Tab label="Menú persistente" {...a11yProps(1)} />
-          <Tab label="Item Three" {...a11yProps(2)} />
+          <Tab label="Postbacks" {...a11yProps(2)} />
         </Tabs>
       </AppBar>
       <TabPanel value={value} index={0}>
+          <Postbacks style={style}/>
           {/* <MensajeBievenida style={style}/> */}
-          <MenuPersistente style={style}/>
       </TabPanel>
       <TabPanel value={value} index={1}>
-        {/* <MenuPersistente style={style}/> */}
+        <MenuPersistente style={style}/>
       </TabPanel>
       <TabPanel value={value} index={2}>
-        Item Three
+          {/* <Postbacks style={style}/> */}
       </TabPanel>
     </div>
   );

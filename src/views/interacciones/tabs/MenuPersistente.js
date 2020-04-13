@@ -10,6 +10,8 @@ import { establecerMenuPersistente, obtenerConfiguracionMenuPersistente } from '
 import { compose } from 'recompose';
 import { consumerFirebase } from '../../../server';
 import { withRouter } from 'react-router-dom';
+import { StateContextPostbacks } from '../../../postbacks/store';
+import { format } from 'morgan';
 
 const style = {
     orderIcon: {
@@ -33,9 +35,11 @@ const MenuPersistente = (props) => {
     const [ menus, setMenus ] = useState([]);
     const [ data, dispatch ] = useContext(StateContext);
     const [ iconsOptions, setIconsOptions ] = useState([]);
+    const { postbacks } = useContext(StateContextPostbacks);
     const [ btnTitle, setBtnTitle ] = useState();
-    const [ option, setOption ] = React.useState('bloque');
+    const [ option, setOption ] = React.useState('postback');
     const [ url, setUrl ] = React.useState();
+    const [ postback, setPostback ] = useState();
     const [ colorIcon, setColorIcon ] = useState({
         inactive: "#6c757d",
         active: "#2e3192"
@@ -52,16 +56,24 @@ const MenuPersistente = (props) => {
 
     useEffect(() => {
          getConfigurations();
+         console.log("postback-->",postback);
     },[])
 
     const getConfigurations = async () => {
         setLoading(true);
-        const callback = await obtenerConfiguracionMenuPersistente(firebase, '/api/read/configuracion/persistent-menu');
-        const options = callback.data.persistent_menu[0].call_to_actions;
+        const localMenu = JSON.parse(localStorage.getItem("menu_persistente"));
+        let options;
+        if(localMenu === null){
+            const callback = await obtenerConfiguracionMenuPersistente(firebase, '/api/read/configuracion/persistent-menu');
+            localStorage.setItem('menu_persistente',JSON.stringify(callback));
+            options = callback.data.persistent_menu[0].call_to_actions;
+        } else {
+            options = localMenu.data.persistent_menu[0].call_to_actions;
+        }
         const settingOptions = options.map((option,index) => {
             const nObj = {...option};
             nObj['order'] = index + 1;
-            nObj['option'] = option.type === 'web_url' ? 'url' : 'bloque';
+            nObj['option'] = option.type === 'web_url' ? 'url' : 'postback';
             return nObj;
         })
         const settingIconsOptions = settingOptions.map(option => {
@@ -85,6 +97,13 @@ const MenuPersistente = (props) => {
     };
 
     const addLocalOption = e => {
+        if(menus.length >= 3){
+            openMensajePantalla(dispatch,{
+                open: true,
+                mensaje: 'Solo puedes tener 3 opciones en el menú persistente.'
+            })
+            return false;
+        }
         if(isCreate){
             if(option === 'url'){
                 if(btnTitle === undefined || url === undefined){
@@ -103,25 +122,36 @@ const MenuPersistente = (props) => {
                       webview_height_ratio: "full",
                       order: menus.length + 1, 
                       option: 'url'
-                  }  
+                  }
                 ])
-                setIconsOptions(prevState => [
-                    ...prevState,
-                    {
-                        order: menus.length + 1, selected: false 
-                    }
-                ])
-            }else if(option === 'bloque'){
-                // if(btnTitle === undefined || url === undefined){
+            }else if(option === 'postback'){
+                if(btnTitle === undefined || postback === undefined){
                     openMensajePantalla(dispatch,{
                         open: true,
-                        mensaje: 'Función no hábilitada.'
+                        mensaje: 'El campo título y postback son obligatorios.'
                     })
                     return false;
-                // }
+                }
+                setMenus(prevState => [
+                    ...prevState,
+                  {
+                      type: "postback",
+                      title: btnTitle,
+                      payload: postback,
+                      order: menus.length + 1, 
+                      option: 'postback'
+                  }
+                ])
             }
+            setIconsOptions(prevState => [
+                ...prevState,
+                {
+                    order: menus.length + 1, selected: false 
+                }
+            ])
             setBtnTitle('');
             setUrl('');
+            setPostback('');
         } else {
             const isSelect = iconsOptions.filter(icon => icon.selected === true);
             const selectedMenuOption = menus.filter(menu => menu.order === isSelect[0].order);
@@ -136,6 +166,23 @@ const MenuPersistente = (props) => {
                 setMenus(prevState => [
                     ...newMenuOptions
                 ]);
+            }else if(option === 'postback'){
+                if(btnTitle === undefined || postback === undefined){
+                    openMensajePantalla(dispatch,{
+                        open: true,
+                        mensaje: 'El campo título y postback son obligatorios.'
+                    })
+                    return false;
+                } else {
+                    setMenus(prevState => [
+                        ...prevState,
+                      {
+                          type: "postback",
+                          title: btnTitle,
+                          payload: postback
+                      }
+                    ])
+                }
             }
         }
     }
@@ -168,6 +215,9 @@ const MenuPersistente = (props) => {
 
     const selectOptionMenu = event => {
         setLoading(true);
+        setBtnTitle("");
+        setUrl("");
+        setPostback("");
         const key = event.nativeEvent.target.parentNode.parentNode.dataset["key"];
         const newIconsOptions = iconsOptions.map(obj => {
             obj.order == key ? obj.selected = !obj.selected : obj.selected = false;
@@ -180,9 +230,17 @@ const MenuPersistente = (props) => {
         if(isSelect.length){
             setIsCreate(false);
             const selectedMenuOption = menus.filter(menu => menu.order == key);
-            if(selectedMenuOption[0] !== undefined && selectedMenuOption[0].option === 'url'){
-                setBtnTitle(selectedMenuOption[0].title);
-                setUrl(selectedMenuOption[0].url);
+            if(selectedMenuOption[0] !== undefined){
+                if(selectedMenuOption[0].option === 'url'){
+                    setBtnTitle(selectedMenuOption[0].title);
+                    setUrl(selectedMenuOption[0].url);
+                    console.log("url",url);
+                } else {
+                    setBtnTitle(selectedMenuOption[0].title);
+                    setPostback(selectedMenuOption[0].payload);
+                    console.log("payload",selectedMenuOption[0].payload);
+                    console.log("postback",postback);
+                }
             }
         } else {
             setIsCreate(true);
@@ -197,11 +255,13 @@ const MenuPersistente = (props) => {
         if(menus.length){
             const newMenuOptions = menus.map( menu => {
                 const nObj = {};
+                nObj['type'] = menu.type;
+                nObj['title'] = menu.title;
                 if(menu.option === 'url'){
-                    nObj['type'] = menu.type;
-                    nObj['title'] = menu.title;
                     nObj['url'] = menu.url;
                     nObj['webview_height_ratio'] = menu.webview_height_ratio;
+                } else if(menu.option === 'postback'){
+                    nObj['payload'] = menu.payload;
                 }
                 return nObj;
             })
@@ -217,12 +277,12 @@ const MenuPersistente = (props) => {
                 ]
             }
             const callback = await establecerMenuPersistente(firebase, '/api/create/configuracion/persistent-menu', data);
-            console.log("callback", callback);
             if(callback.status == 200){
                 openMensajePantalla(dispatch, {
                     open: true,
                     mensaje: "Se ha realizado correctamente la actualización."
                 })
+                localStorage.setItem('menu_persistente',JSON.stringify(data));
             } else {
                 openMensajePantalla(dispatch, {
                     open: true,
@@ -315,18 +375,21 @@ const MenuPersistente = (props) => {
                         </IconButton>
                         <Grid item xs={12} md={12} style={{marginTop: '15px'}}>
                         <RadioGroup aria-label="options" name="options-menu" value={option} onChange={handleChange}>
-                            <FormControlLabel value="bloque" control={<Radio />} label="Bloque" />
-                            {option === 'bloque' ?
+                            <FormControlLabel value="postback" control={<Radio />} label="Postback" />
+                            {option === 'postback' ?
                             <Container>
                                 <Typography>
-                                    1. Redireccionar al bloque:
+                                    1. Redireccionar al postback:
                                 </Typography>
                                 <Autocomplete
                                     id="combo-box-demo"
-                                    options={top100Films}
+                                    options={formatPostbacks()}
                                     getOptionLabel={option => option.title}
                                     style={{ width: 300 }}
                                     renderInput={params => <TextField {...params} label="Combo box" variant="outlined" />}
+                                    inputValue={postback}
+                                    // value={{postback}}
+                                    onChange={e => setPostback(e.target.textContent)}
                                     />
                             </Container>
                             : ''}
@@ -360,31 +423,12 @@ const MenuPersistente = (props) => {
     );
 };
 
-const top100Films =
-[
-    { title: 'The Shawshank Redemption', year: 1994 },
-    { title: 'The Godfather', year: 1972 },
-    { title: 'The Godfather: Part II', year: 1974 },
-    { title: 'The Dark Knight', year: 2008 },
-    { title: '12 Angry Men', year: 1957 },
-    { title: "Schindler's List", year: 1993 },
-    { title: 'Pulp Fiction', year: 1994 },
-    { title: 'The Lord of the Rings: The Return of the King', year: 2003 },
-    { title: 'The Good, the Bad and the Ugly', year: 1966 },
-    { title: 'Fight Club', year: 1999 },
-    { title: 'The Lord of the Rings: The Fellowship of the Ring', year: 2001 },
-    { title: 'Star Wars: Episode V - The Empire Strikes Back', year: 1980 },
-    { title: 'Forrest Gump', year: 1994 },
-    { title: 'Inception', year: 2010 },
-    { title: 'The Lord of the Rings: The Two Towers', year: 2002 },
-    { title: "One Flew Over the Cuckoo's Nest", year: 1975 },
-    { title: 'Goodfellas', year: 1990 },
-    { title: 'The Matrix', year: 1999 },
-    { title: 'Seven Samurai', year: 1954 },
-    { title: 'Star Wars: Episode IV - A New Hope', year: 1977 },
-    { title: 'City of God', year: 2002 },
-    { title: 'Se7en', year: 1995 },
-    { title: 'The Silence of the Lambs', year: 1991 },
-    { title: "It's a Wonderful Life", year: 1946 },
-]
+const formatPostbacks = () => {
+    const internalPostbacks = JSON.parse(localStorage.getItem('postbacks'));
+    const formatPostbacks = [];
+    internalPostbacks.forEach(element => {
+        formatPostbacks.push({title: Object.keys(element)[0]});
+    });
+    return formatPostbacks;
+}
 export default compose(consumerFirebase, withRouter)(MenuPersistente);

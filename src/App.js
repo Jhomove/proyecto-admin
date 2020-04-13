@@ -38,7 +38,6 @@ function App(props) {
   const [autenticacionIniciada, setupFirebaseInicial] = React.useState(false);
 
   const [{ openSnackbar,sesion }, dispatch] = useStateValue();
-  console.log("openSnackBar",useStateValue);
 
   useEffect(() => {
     firebase.estaIniciado().then(val => {

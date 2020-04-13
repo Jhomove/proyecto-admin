@@ -94,7 +94,6 @@ class RegistrarUsuario extends Component {
 
             const idToken = await firebase.auth.currentUser.getIdToken(true);
             let callback = await crearUsuario('api/create/user', this.state.user, idToken)
-            console.log("callback",callback);
             if(callback.status){
               this.props.history.push("/")
             } else {

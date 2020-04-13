@@ -6,7 +6,6 @@ const interaccionesReducer = (state,action) => {
     switch (action.type) {
         case "CAMBIAR_TITULO":
             return action.title;
-    
         default:
             return state;
     }
