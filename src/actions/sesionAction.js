@@ -1,12 +1,12 @@
 
-const routeApi = 'http://localhost:5001/aunarbot-lnkibg/us-central1/app/';
+const routeApi = 'https://us-central1-aunarbot-lnkibg.cloudfunctions.net/app/';
 
 export const iniciarSesion = (dispatch, firebase, email, password) => {
   return new Promise((resolve, reject) => {
     fetch(routeApi + 'api/login',{
       method: 'POST',
       body: JSON.stringify({
-        email: email,
+        email: email.replace(/ /g,''),
         password: password
       }),
       headers:{
@@ -14,6 +14,7 @@ export const iniciarSesion = (dispatch, firebase, email, password) => {
       }
     }).then(response => response.json())
       .then(response => {
+        console.log("response",response);
         firebase.auth
           .signInWithCustomToken(response.customToken)
           .then(auth => {

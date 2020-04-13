@@ -14,17 +14,22 @@
     "firebase": "^7.9.1",
     "firebase-admin": "^8.9.2",
     "http2": "^3.3.7",
+    "lodash": "^4.17.15",
     "material-table": "^1.57.2",
     "morgan": "^1.9.1",
     "react": "^16.13.0",
     "react-admin-firebase": "^3.0.0",
+    "react-dnd": "^10.0.2",
+    "react-dnd-html5-backend": "^10.0.2",
     "react-dom": "^16.13.0",
     "react-images-upload": "^1.2.8",
     "react-router-dom": "^5.1.2",
     "react-scripts": "3.4.0",
     "recompose": "^0.30.0",
+    "sortablejs": "^1.10.2",
+    "styled-components": "^5.0.1",
     "uid": "0.0.2",
-    "uuid": "^7.0.1"
+    "uuid": "^7.0.2"
   },
   "scripts": {
     "start": "react-scripts start",

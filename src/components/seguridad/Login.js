@@ -57,7 +57,6 @@ class Login extends Component {
     const [{sesion}, dispatch] = this.context;
     const {firebase, usuario} = this.state;
     const {email,password}  = usuario;
-    
     let callback = await iniciarSesion(dispatch, firebase, email, password);
     if(callback.status){
       this.props.history.push('/');
