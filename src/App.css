@@ -28,6 +28,15 @@
   color: #61dafb;
 }
 
+.MuiBox-root-212{
+  display:flex;
+  flex: 1;
+}
+
+.MuiBox-root{
+  padding: 0 !important;
+}
+
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);

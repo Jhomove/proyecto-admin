@@ -73,7 +73,7 @@ function App(props) {
         <Router>
           <MuiThemeProvider theme={theme}>
             <AppNavbar />
-            <Grid container>
+            <Grid container style={{height: window.innerHeight - 64}}>
               <Switch>
                 <RutaAutenticada exact path="/" autenticadoFirebase={firebase.auth.currentUser} component={ListaUsuarios}/>
                 <RutaAutenticada path="/auth/perfil" autenticadoFirebase={firebase.auth.currentUser} component={PerfilUsuario}/>

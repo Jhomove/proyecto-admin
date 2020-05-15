@@ -1,5 +1,5 @@
 
-const routeApi = 'https://us-central1-aunarbot-lnkibg.cloudfunctions.net/app/';
+const routeApi = 'https://824061e3.ngrok.io/';
 
 export const iniciarSesion = (dispatch, firebase, email, password) => {
   return new Promise((resolve, reject) => {

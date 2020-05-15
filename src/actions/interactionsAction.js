@@ -1,4 +1,4 @@
-const routeApi = "https://bf7a5ef2.ngrok.io";
+const routeApi = "https://07a40fdf.ngrok.io/";
 
 export const obtenerInteracciones = async (firebase, route) => {
   // const idToken = await firebase.auth.currentUser.getIdToken(true);
@@ -32,7 +32,6 @@ export const actualizarInteraccion = async (
     })
       .then(response => response.json())
       .then(response => {
-        console.log("response",response);
         if (response.status === 200) {
           return resolve({ status: true, data: response });
         } else {
@@ -81,6 +80,7 @@ export const obtenerConfiguracionMenuPersistente = async (firebase, route) => {
 }
 
 export const obtenerPostbacks = async (firebase, route) => {
+  console.log("Hola que hace");
   return new Promise (async (resolve,reject) => {
     fetch(routeApi + route, {
       method: "GET",
@@ -94,10 +94,29 @@ export const obtenerPostbacks = async (firebase, route) => {
 }
 
 export const establecerPostbacks = async (firebase,route,data) => {
+  console.log("firebase",firebase);
   return new Promise (async ( resolve, reject ) => {
     const idToken = await firebase.auth.currentUser.getIdToken(true);
     fetch(routeApi + route, {
       method: "POST",
+      body: JSON.stringify({
+        idToken: idToken,
+        data: data
+      }),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    }).then(response => response.json())
+    .then(response => resolve({status: response.status, data: response.data !== undefined ? response.data : [], mensaje: response.message}))
+    .catch(error => reject({ status: false, mensaje: error}))
+  })
+}
+
+export const actualizarPostback = async (firebase,route,data) => {
+  return new Promise (async (resolve,reject) => {
+    const idToken = await firebase.auth.currentUser.getIdToken(true);
+    fetch(routeApi + route, {
+      method: 'POST',
       body: JSON.stringify({
         idToken: idToken,
         data: data

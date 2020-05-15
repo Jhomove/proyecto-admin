@@ -12,6 +12,7 @@ import { withRouter } from 'react-router-dom';
 import MensajeBievenida from './tabs/MensajeBienvenida';
 import MenuPersistente from './tabs/MenuPersistente';
 import Postbacks from './tabs/Postbacks';
+import IndexPostback from './tabs/IndexPostback';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -81,32 +82,42 @@ const style = {
   }
 };
 
+const stylePanel = {
+  indicator: {
+    height: 'inherit'
+  },
+  root: {
+    height: 'inherit'
+  }
+}
+
 const Interacciones = (props) => {
   const classes = useStyles();
   const [value, setValue] = React.useState(0);
-
+  const containerTabs = document.getElementById('container-tabs');
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
 
   return (
-    <div className={classes.root}>
-      <AppBar position="static">
+    <div id="container-tabs" className={classes.root} style={{display: 'flex',flexDirection: 'column'}}>
+      <AppBar position="static" style={{flex:1}}>
         <Tabs value={value} onChange={handleChange} aria-label="simple tabs example">
           <Tab label="Bienvenida" {...a11yProps(0)} />
           <Tab label="Menú persistente" {...a11yProps(1)} />
           <Tab label="Postbacks" {...a11yProps(2)} />
         </Tabs>
       </AppBar>
-      <TabPanel value={value} index={0}>
-          <Postbacks style={style}/>
-          {/* <MensajeBievenida style={style}/> */}
+      <TabPanel value={value} index={0} style={{flex:10,display:'flex',flexDirection: 'column'}}>
+          
+          {/* <Postbacks style={style}/> */}
+          <MensajeBievenida style={style}/>
       </TabPanel>
       <TabPanel value={value} index={1}>
         <MenuPersistente style={style}/>
       </TabPanel>
       <TabPanel value={value} index={2}>
-          {/* <Postbacks style={style}/> */}
+        <IndexPostback style={style}/>
       </TabPanel>
     </div>
   );

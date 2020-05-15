@@ -30,6 +30,8 @@ class Firebase{
     guardarDocumento = (nombreDocumento, documento) => this.storage.ref().child(nombreDocumento).put(documento);
 
     devolverDocumento = (documentoUrl) => this.storage.ref().child(documentoUrl).getDownloadURL();
+
+    eliminarDocumento = (nombreDocumento) => this.storage.ref().child(nombreDocumento).delete();
 }
 
 export default Firebase;

@@ -43,6 +43,10 @@ const PlantillaGenerica = (props) => {
 
     let fotoKey = uuidv4();
 
+    useEffect(()=> {
+        console.log("props",props)
+    })
+
         return props.selected[0].status ? (
             <div>
                 <Grid container direction="column" alignItems="center" justify="center" spacing={0}>
@@ -104,57 +108,71 @@ const PlantillaGenerica = (props) => {
                             <p style={{margin:20}}>
                                 En esta sección podrá configurar si así lo desea los botones de su plantilla generica, si no lo desea no los configure y su plantilla no aparecerá con los botones.
                             </p>
+                            {
+                            <IconButton edge="end" aria-label="add_button"  color="primary" size="small" disabled={props.element[0].attachment.payload.elements[0].buttons &&  props.element[0].attachment.payload.elements[0].buttons.length > 2 ? true : false} onClick={props.addButton({type: props.type, ident: props.ident})}>
+                                Agregar botón
+                            </IconButton>
+                            }
                             <CardActions>
-                                    <Buttons panelControl="panel1a-content" panelId="panel1a-header" title="Botón 1">
-                                        <Grid container>
-                                            <Grid item xs={12} md={12}>
-                                                <TextField
-                                                    name="attachment.payload.elements.0.buttons.0.title"
-                                                    variant="outlined"
-                                                    label="Añadir título del boton"
-                                                    value={props.element[0].attachment.payload.elements[0].buttons[0].title}
-                                                    onChange={props.handleChange({type: props.type, ident: props.ident})}
-                                                    onBlur={props.save}
-                                                />
-                                            </Grid>
-                                            <Grid item xs={12} md={12}>
-                                                <RadioGroup aria-label="options" name="options-menu" value={option} onChange={handleChange({btn: 1})}>
-                                                    <FormControlLabel value="postback" control={<Radio />} label="Postback" />
-                                                    {option === 'postback' ?
-                                                    <Container>
-                                                        <Typography>
-                                                            1. Redireccionar al postback:
-                                                        </Typography>
-                                                        <Autocomplete
-                                                            id="combo-box-demo"
-                                                            options={formatPostbacks()}
-                                                            getOptionLabel={option => option.title}
-                                                            style={{ width: 200 }}
-                                                            renderInput={params => <TextField {...params} label={props.element[0].attachment.payload.elements[0].buttons[0].payload} variant="outlined" />}
-                                                            onChange={props.handleChange({type: props.type, ident: props.ident, typeButton: 'postback',name: "attachment.payload.elements.0.buttons.0.postback"})}
-                                                            onBlur={props.save}
-                                                        />
-                                                    </Container>
-                                                    : ''}
-                                                    <FormControlLabel value="url" control={<Radio />} label="URL" />
-                                                    {option === 'url' ?
-                                                    <Container>
-                                                        <Typography>
-                                                            1. Abrir URL:
-                                                        </Typography>
+                                    {
+                                        props.element[0].attachment.payload.elements[0].buttons !== undefined ? props.element[0].attachment.payload.elements[0].buttons.map((button, key) => {
+                                            console.log("hola")
+                                            return (<Buttons panelControl={`panel${key}-content`} panelId={`panel${key}a-header`} title={`Definir Botón ${key + 1}`}>
+                                                <Grid container>
+                                                    <Grid item xs={12} md={12}>
                                                         <TextField
-                                                            name="attachment.payload.elements.0.buttons.0.url"
+                                                            name={`attachment.payload.elements.0.buttons.${key}.title`}
                                                             variant="outlined"
-                                                            fullWidth 
-                                                            label="Añadir URL"
-                                                            value={props.element[0].attachment.payload.elements[0].buttons[0].url}
-                                                            onChange={props.handleChange({type: props.type, ident: props.ident, typeButton: 'web_url'})}
-                                                            onBlur={props.save}
+                                                            label="Añadir título del boton"
+                                                            value={props.element[0].attachment.payload.elements[0].buttons[key].title ? props.element[0].attachment.payload.elements[0].buttons[key].title : ""}
+                                                            onChange={props.handleChange({type: props.type, ident: props.ident})}
+                                                            // onBlur={props.save}
                                                         />
-                                                    </Container>
-                                                    : ''}
-                                                </RadioGroup>
-                                            </Grid>
+                                                    </Grid>
+                                                    <Grid item xs={12} md={12}>
+                                                        <RadioGroup aria-label="options" name="options-menu" value={option} onChange={handleChange({btn: 1})}>
+                                                            <FormControlLabel value="postback" control={<Radio />} label="Postback" />
+                                                            {option === 'postback' ?
+                                                            <Container>
+                                                                <Typography>
+                                                                    1. Redireccionar al postback:
+                                                                </Typography>
+                                                                <Autocomplete
+                                                                    id="combo-box-demo"
+                                                                    options={formatPostbacks()}
+                                                                    getOptionLabel={option => option.title}
+                                                                    style={{ width: 200 }}
+                                                                    renderInput={params => <TextField {...params} label={props.element[0].attachment.payload.elements[0].buttons[key].postback} variant="outlined" />}
+                                                                    onChange={props.handleChange({type: props.type, ident: props.ident, typeButton: 'postback',name: `attachment.payload.elements.0.buttons.${key}.payload`})}
+                                                                    // onBlur={props.save}
+                                                                />
+                                                            </Container>
+                                                            : ''}
+                                                            <FormControlLabel value="url" control={<Radio />} label="URL" />
+                                                            {option === 'url' ?
+                                                            <Container>
+                                                                <Typography>
+                                                                    1. Abrir URL:
+                                                                </Typography>
+                                                                <TextField
+                                                                    name={`attachment.payload.elements.0.buttons.${key}.url`}
+                                                                    variant="outlined"
+                                                                    fullWidth 
+                                                                    label="Añadir URL"
+                                                                    value={props.element[0].attachment.payload.elements[0].buttons[key].url}
+                                                                    onChange={props.handleChange({type: props.type, ident: props.ident, typeButton: 'web_url'})}
+                                                                    // onBlur={props.save}
+                                                                />
+                                                            </Container>
+                                                            : ''}
+                                                        </RadioGroup>
+                                                    </Grid>
+                                                </Grid>
+                                            </Buttons>)
+                                        }) : null
+                                    }
+                                    {/* <Buttons panelControl="panel1a-content" panelId="panel1a-header" title="Botón 1">
+                                        
                                         </Grid>
                                     </Buttons>
                                     <Buttons panelControl="panel2a-content" panelId="panel2a-header" title="Botón 2">
@@ -182,7 +200,7 @@ const PlantillaGenerica = (props) => {
                                                             options={formatPostbacks()}
                                                             getOptionLabel={option => option.title}
                                                             style={{ width: 200 }}
-                                                            renderInput={params => <TextField {...params} label={props.element[0].attachment.payload.elements[0].buttons[1].payload} variant="outlined" />}
+                                                            renderInput={params => <TextField {...params} label={props.element[0].attachment.payload.elements[0].buttons[1].postback} variant="outlined" />}
                                                             onChange={props.handleChange({type: props.type, ident: props.ident, typeButton: 'postback',name: "attachment.payload.elements.0.buttons.1.postback"})}
                                                             onBlur={props.save}
                                                         />
@@ -209,8 +227,8 @@ const PlantillaGenerica = (props) => {
                                             </Grid>
                                         </Grid>
                                     </Buttons>
-                                    <Buttons panelControl="panel3a-content" panelId="panel3a-header" title="Botón 3">
-                                        <Grid container>
+                                    <Buttons panelControl="panel3a-content" panelId="panel3a-header" title="Botón 3"> */}
+                                        {/* <Grid container>
                                             <Grid item xs={12} md={12}>
                                                 <TextField
                                                     name="attachment.payload.elements.0.buttons.2.title"
@@ -234,7 +252,7 @@ const PlantillaGenerica = (props) => {
                                                             options={formatPostbacks()}
                                                             getOptionLabel={option => option.title}
                                                             style={{ width: 200 }}
-                                                            renderInput={params => <TextField {...params} label={props.element[0].attachment.payload.elements[0].buttons[2].payload} variant="outlined" />}
+                                                            renderInput={params => <TextField {...params} label={props.element[0].attachment.payload.elements[0].buttons[2].postback} variant="outlined" />}
                                                             onChange={props.handleChange({type: props.type, ident: props.ident, typeButton: 'postback',name: "attachment.payload.elements.0.buttons.2.postback"})}
                                                             onBlur={props.save}
                                                         />
@@ -260,7 +278,7 @@ const PlantillaGenerica = (props) => {
                                                 </RadioGroup>
                                             </Grid>
                                         </Grid>
-                                    </Buttons>
+                                    </Buttons> */}
                             </CardActions>
                         </Card>
                     </Grid> 

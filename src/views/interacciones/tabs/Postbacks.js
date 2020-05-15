@@ -174,7 +174,6 @@ const Postbacks = (props) => {
     const getPostbacks = async () => {
         try {
             let localPostbacks = JSON.parse(localStorage.getItem('postbacks'));
-
             if(localPostbacks === null){
                 const callback = await obtenerPostbacks(firebase, '/api/read/configuracion/postbacks');
                 localPostbacks = callback['data'];
@@ -249,7 +248,6 @@ const Postbacks = (props) => {
         setPostbacksData(prevState => [
             ...elements
         ]);
-        console.log("postbackData", postbacksData);
     }
 
     const drop = event => {
@@ -291,9 +289,9 @@ const Postbacks = (props) => {
                     </Typography>
                 </div>
                 <div className="section">
-                    <Typography paragraph>
+                    {/* <Typography paragraph>
                         En esta sección podrás configurar las secciones de respuesta ante una acción del usuario.
-                    </Typography>
+                    </Typography> */}
                     <Card>
                         <CardContent>
                             <Grid container>
@@ -323,7 +321,7 @@ const Postbacks = (props) => {
                     </Card>
                     <form onSubmit={handleSubmit}>
                         <Card style={props.style.form}>
-                            <CardContent style={{maxHeight:150,overflowY: 'auto'}}>
+                            <CardContent style={{maxHeight:200,overflowY: 'auto'}}>
                                 <Typography color="textSecondary" gutterBottom>
                                     Añadir nueva opción
                                 </Typography>

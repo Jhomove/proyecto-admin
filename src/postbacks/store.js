@@ -1,12 +1,13 @@
-import React, { createContext, useReducer, useEffect } from 'react';
+import React, { createContext, useReducer, useEffect, useState } from 'react';
 import postbacksReducers from './reducers';
+import { obtenerPostbacks } from '../actions/interactionsAction';
 
 export const StateContextPostbacks = createContext();
 
 
 const StateProviderPostbacks = props => {
     const [ postbacks, dispatchPostbacks ] = useReducer(postbacksReducers,[],() => {
-        const localData = localStorage.getItem('postbacks');
+        const localData = JSON.parse(localStorage.getItem('postbacks'));
         return localData ? localData : [];
     });
 
@@ -16,7 +17,6 @@ const StateProviderPostbacks = props => {
             localStorage.setItem('postbacks',JSON.stringify(aux_postbacks));
         }
     }, [postbacks]);
-
     return (
         <StateContextPostbacks.Provider value={{postbacks,dispatchPostbacks}}>
             { props.children }

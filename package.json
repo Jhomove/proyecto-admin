@@ -28,6 +28,7 @@
     "recompose": "^0.30.0",
     "sortablejs": "^1.10.2",
     "styled-components": "^5.0.1",
+    "sweetalert": "^2.1.2",
     "uid": "0.0.2",
     "uuid": "^7.0.2"
   },

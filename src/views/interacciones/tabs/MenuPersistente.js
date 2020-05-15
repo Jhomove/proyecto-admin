@@ -62,32 +62,38 @@ const MenuPersistente = (props) => {
     const getConfigurations = async () => {
         setLoading(true);
         const localMenu = JSON.parse(localStorage.getItem("menu_persistente"));
+        console.log("localMenu",localMenu);
         let options;
         if(localMenu === null){
-            const callback = await obtenerConfiguracionMenuPersistente(firebase, '/api/read/configuracion/persistent-menu');
-            localStorage.setItem('menu_persistente',JSON.stringify(callback));
-            options = callback.data.persistent_menu[0].call_to_actions;
+            const callback = await obtenerConfiguracionMenuPersistente(firebase, 'api/read/configuracion/persistent-menu');
+            console.log("callback",callback)
+            if(callback.data !== undefined){
+                localStorage.setItem('menu_persistente',JSON.stringify(callback));
+                options = callback.data.persistent_menu[0].call_to_actions;
+            }
         } else {
-            options = localMenu.data.persistent_menu[0].call_to_actions;
+            options = localMenu.persistent_menu[0].call_to_actions;
         }
-        const settingOptions = options.map((option,index) => {
-            const nObj = {...option};
-            nObj['order'] = index + 1;
-            nObj['option'] = option.type === 'web_url' ? 'url' : 'postback';
-            return nObj;
-        })
-        const settingIconsOptions = settingOptions.map(option => {
-            const nObj = {...option};
-            nObj['order'] = option.order;
-            nObj['selected'] = false;
-            return nObj;
-        });
-        setMenus(prevState => [
-            ...settingOptions
-        ])
-        setIconsOptions(prevState => [
-            ...settingIconsOptions
-        ])
+        if(options !== undefined && options !== null && options.length){
+            const settingOptions = options.map((option,index) => {
+                const nObj = {...option};
+                nObj['order'] = index + 1;
+                nObj['option'] = option.type === 'web_url' ? 'url' : 'postback';
+                return nObj;
+            })
+            const settingIconsOptions = settingOptions.map(option => {
+                const nObj = {...option};
+                nObj['order'] = option.order;
+                nObj['selected'] = false;
+                return nObj;
+            });
+            setMenus(prevState => [
+                ...settingOptions
+            ])
+            setIconsOptions(prevState => [
+                ...settingIconsOptions
+            ])
+        }
         setLoading(false);
         return true;
     }
@@ -276,7 +282,7 @@ const MenuPersistente = (props) => {
                     }
                 ]
             }
-            const callback = await establecerMenuPersistente(firebase, '/api/create/configuracion/persistent-menu', data);
+            const callback = await establecerMenuPersistente(firebase, 'api/create/configuracion/persistent-menu', data);
             if(callback.status == 200){
                 openMensajePantalla(dispatch, {
                     open: true,
@@ -427,7 +433,7 @@ const formatPostbacks = () => {
     const internalPostbacks = JSON.parse(localStorage.getItem('postbacks'));
     const formatPostbacks = [];
     internalPostbacks.forEach(element => {
-        formatPostbacks.push({title: Object.keys(element)[0]});
+        formatPostbacks.push({title: element.key});
     });
     return formatPostbacks;
 }
