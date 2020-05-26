@@ -11,6 +11,7 @@ import {mainReducer} from './sesion/reducers';
 import StateProviderInteractions from "./interacciones/store";
 import StateProviderPostbacks from "./postbacks/store";
 import ProviderOptionsPostback from "./optionsPostback/store";
+import IntentsProvider from "./views/Intenciones/store";
 
 ReactDOM.render(
   <FirebaseContext.Provider value={new Firebase()}>
@@ -18,7 +19,9 @@ ReactDOM.render(
       <StateProviderInteractions>
         <StateProviderPostbacks>
           <ProviderOptionsPostback>
-            <App />
+            <IntentsProvider>
+              <App />
+            </IntentsProvider>
           </ProviderOptionsPostback>
         </StateProviderPostbacks>
       </StateProviderInteractions>

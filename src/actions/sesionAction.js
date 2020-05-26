@@ -1,5 +1,7 @@
 
-const routeApi = 'https://824061e3.ngrok.io/';
+import { getIp } from '../config';
+
+const routeApi = getIp();
 
 export const iniciarSesion = (dispatch, firebase, email, password) => {
   return new Promise((resolve, reject) => {

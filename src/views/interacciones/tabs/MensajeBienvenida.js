@@ -37,7 +37,7 @@ const MensajeBievenida = (props) => {
         if(title === ''){
           const localTitle = localStorage.getItem('title');
           if(!localTitle){
-            const callback = await obtenerInteracciones(firebase, '/api/read/configuraciones/greeting');
+            const callback = await obtenerInteracciones(firebase, 'api/read/configuraciones/greeting');
             setTitle(callback.data);
           } else {
             setTitle(localTitle);
@@ -50,7 +50,7 @@ const MensajeBievenida = (props) => {
         e.preventDefault();
         setLoading(true);
         const {firebase, data } = estado;
-        const callback = await actualizarInteraccion(firebase, '/api/update/configuracion/greeting', {titulo: title});
+        const callback = await actualizarInteraccion(firebase, 'api/update/configuracion/greeting', {titulo: title});
         setLoading(false);
         if(callback.status){
           openMensajePantalla(dispatch, {

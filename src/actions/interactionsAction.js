@@ -1,4 +1,6 @@
-const routeApi = "https://07a40fdf.ngrok.io/";
+
+import { getIp } from '../config';
+const routeApi = getIp();
 
 export const obtenerInteracciones = async (firebase, route) => {
   // const idToken = await firebase.auth.currentUser.getIdToken(true);

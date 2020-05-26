@@ -17,6 +17,8 @@ import RutaAutenticada from "./components/seguridad/RutaAutenticada";
 import PerfilUsuario from "./components/seguridad/PerfilUsuario";
 import CrudDependencias from "./views/CrudDependencias";
 import Interacciones from "./views/interacciones/Interacciones";
+import Intenciones from "./views/Intenciones/Intenciones";
+import CrearIntenciones from './views/Intenciones/CrearIntenciones';
 
 function App(props) {
   const [open, setOpen] = React.useState(false);
@@ -78,8 +80,10 @@ function App(props) {
                 <RutaAutenticada exact path="/" autenticadoFirebase={firebase.auth.currentUser} component={ListaUsuarios}/>
                 <RutaAutenticada path="/auth/perfil" autenticadoFirebase={firebase.auth.currentUser} component={PerfilUsuario}/>
                 <RutaAutenticada path="/auth/registrarUsuario" autenticadoFirebase={firebase.auth.currentUser} component={RegistrarUsuario}/>
-                <RutaAutenticada path="/Dependencias" autenticadoFirebase={firebase.auth.currentUser} component={CrudDependencias}/>
+                <RutaAutenticada path="/dependencias" autenticadoFirebase={firebase.auth.currentUser} component={CrudDependencias}/>
                 <RutaAutenticada path="/interacciones" autenticadoFirebase={firebase.auth.currentUser} component={Interacciones}/>
+                <RutaAutenticada exact path="/intenciones" autenticadoFirebase={firebase.auth.currentUser} component={Intenciones}/>
+                <RutaAutenticada exact path="/intenciones/crear" autenticadoFirebase={firebase.auth.currentUser} component={CrearIntenciones}/>
                 {/* <Route path="/auth/registrarUsuario" component={RegistrarUsuario}></Route> */}
                 <Route path="/auth/login" component={Login}></Route>
               </Switch>

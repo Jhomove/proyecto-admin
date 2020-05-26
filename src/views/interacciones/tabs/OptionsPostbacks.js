@@ -170,7 +170,6 @@ const OptionsPostbacks = props => {
                     }
                     return elem;
                 });
-                console.log("updateElement",updateElement)
                 setElements(prevState => updateElement)       
                 break;
             case "generic":

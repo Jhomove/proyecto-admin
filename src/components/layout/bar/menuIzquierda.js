@@ -19,18 +19,18 @@ export const MenuIzquierda = ({classes}) => (
                     <i className="material-icons">record_voice_over</i>
                     <ListItemText classes={{primary: classes.ListItemText}} primary="Interacciones" />
                 </ListItem>
-                <ListItem component={Link} button to="">
+                <ListItem component={Link} button to="/intenciones">
                     <i className="material-icons">comment</i>
-                    <ListItemText classes={{primary: classes.ListItemText}} primary="Conocimiento" />
+                    <ListItemText classes={{primary: classes.ListItemText}} primary="Intenciones" />
                 </ListItem>
-                <ListItem component={Link} button to="/Dependencias">
+                <ListItem component={Link} button to="/dependencias">
                     <i className="material-icons">drafts</i>
                     <ListItemText classes={{primary: classes.ListItemText}} primary="Dependencias" />
                 </ListItem>
-                <ListItem component={Link} button to="">
+                {/* <ListItem component={Link} button to="/usuarios">
                     <i className="material-icons">supervised_user_circle</i>
                     <ListItemText classes={{primary: classes.ListItemText}} primary="Usuarios" />
-                </ListItem>
+                </ListItem> */}
                 <ListItem component={Link} button to="">
                     <i className="material-icons">settings</i>
                     <ListItemText classes={{primary: classes.ListItemText}} primary="Configuración" />

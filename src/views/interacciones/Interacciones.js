@@ -25,6 +25,7 @@ function TabPanel(props) {
       id={`simple-tabpanel-${index}`}
       aria-labelledby={`simple-tab-${index}`}
       {...other}
+      style={{flex:10,display:'flex',flexDirection: 'column'}}
     >
       {value === index && <Box p={3}>{children}</Box>}
     </Typography>
@@ -100,7 +101,7 @@ const Interacciones = (props) => {
   };
 
   return (
-    <div id="container-tabs" className={classes.root} style={{display: 'flex',flexDirection: 'column'}}>
+    <div id="container-tabs" className={classes.root}>
       <AppBar position="static" style={{flex:1}}>
         <Tabs value={value} onChange={handleChange} aria-label="simple tabs example">
           <Tab label="Bienvenida" {...a11yProps(0)} />
@@ -108,7 +109,7 @@ const Interacciones = (props) => {
           <Tab label="Postbacks" {...a11yProps(2)} />
         </Tabs>
       </AppBar>
-      <TabPanel value={value} index={0} style={{flex:10,display:'flex',flexDirection: 'column'}}>
+      <TabPanel value={value} index={0}>
           
           {/* <Postbacks style={style}/> */}
           <MensajeBievenida style={style}/>
